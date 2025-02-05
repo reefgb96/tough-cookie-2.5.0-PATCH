@@ -541,4 +541,22 @@ vows
       }
     }
   })
+  .addBatch({
+    "Issue #282 - Prototype pollution": {
+      "when setting a cookie with the domain __proto__": {
+        topic: async function() {
+          // Create a vulnerable CookieJar instance.
+          const jar = createVulnerableJar();
+          // Set the cookies.
+          await setCookies(jar, cookies);
+
+          this.callback();
+        },
+        "results in a cookie that is not affected by the attempted prototype pollution": function() {
+          const pollutedObject = {};
+          assert.isUndefined(pollutedObject[config.cookiePath]);
+        }
+      }
+    }
+  })
   .export(module);
